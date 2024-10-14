@@ -10,16 +10,20 @@ class DataParser:
 
     def fetch_page(self, retries=3):
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
         }
-        for _ in range(retries):
+        for attempt in range(retries):
             try:
                 response = requests.get(self.base_url, headers=headers)
                 if response.status_code == 200:
                     return response.text
-                time.sleep(2)
+                print(f"Attempt {attempt + 1}: Status code {response.status_code}")
+                time.sleep(5)
             except Exception as e:
-                print(f"Error fetching page: {e}")
+                print(f"Error fetching page on attempt {attempt + 1}: {e}")
         raise Exception(f"Error fetching page after {retries} retries")
 
     def parse_items(self, html):
