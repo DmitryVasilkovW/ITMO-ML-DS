@@ -7,3 +7,19 @@ def get_headers():
 
 def format_price(price_str):
     return float(price_str.replace('$', '').replace(',', ''))
+
+
+def format_label(label):
+    return label.replace("Marke", "Brand")
+
+
+def format_rating(rating):
+    parts = rating.split(',')
+
+    rating_str = parts[0].split()[0]
+    rating_count = float(rating_str)
+
+    reviews_count_str = parts[1].split()[2]
+    reviews_count = int(reviews_count_str)
+
+    return rating_count, reviews_count

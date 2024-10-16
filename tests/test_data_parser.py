@@ -1,6 +1,6 @@
 import unittest
 
-from ebay_parser.service.data_parser import DataParser
+from ebay_parser.data_parser import DataParser
 
 
 class TestDataParser(unittest.TestCase):

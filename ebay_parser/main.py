@@ -1,6 +1,4 @@
-from ebay_parser.data_cleaner import DataCleaner
-from ebay_parser.service.data_parser import DataParser
-from ebay_parser.data_saver import DataSaver
+from ebay_parser.data_parser import DataParser
 
 
 def main():
@@ -19,7 +17,8 @@ def main():
     # DataSaver.save_to_tsv(cleaned_items, "datasets/raw_data/data.tsv")
     # DataSaver.save_to_arff(cleaned_items, "datasets/processed_data/data.arff")
 
-    print(items)
+    for item in items:
+        print(*item)
 
 
 if __name__ == "__main__":
