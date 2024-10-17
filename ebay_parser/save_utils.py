@@ -1,5 +1,42 @@
 import csv
 import os
+import re
+
+
+def clean_price(price):
+    if price:
+        return float(price.replace(' руб.', '').replace(' ', '').replace(',', '.'))
+    return None
+
+
+def clean_title(title):
+    if title:
+        return title.replace('НОВОЕ ОБЪЯВЛЕНИЕ ', '')
+    return None
+
+
+def clean_screen_size(screen_size):
+    if screen_size:
+        return re.search(r'(\d+)', screen_size).group(1)
+    return None
+
+
+def clean_storage_capacity(storage_capacity):
+    if storage_capacity:
+        return re.search(r'(\d+)', storage_capacity).group(1)
+    return None
+
+
+def clean_ram(ram):
+    if ram:
+        return re.search(r'(\d+)', ram).group(1)
+    return None
+
+
+def clean_camera_resolution(camera_resolution):
+    if camera_resolution:
+        return ', '.join(re.findall(r'(\d+\.?\d*)', camera_resolution))
+    return None
 
 
 def write_to_tsv(table_data, table_fields, filename='../data/ebay_smartphones_data.tsv'):
@@ -14,11 +51,30 @@ def write_to_tsv(table_data, table_fields, filename='../data/ebay_smartphones_da
 
     with open(filename, mode='w', newline='', encoding='utf-8') as file:
         tsv_writer = csv.DictWriter(file, fieldnames=table_fields, delimiter='\t')
-
         tsv_writer.writeheader()
 
         for row in table_data:
-            filtered_row = {key: row.get(key, None) for key in table_fields}
+            filtered_row = {
+                'title': clean_title(row.get('title', '—')),
+                'product condition': row.get('Состояние товара', '—'),
+                'price RUB': clean_price(row.get('price', '—')) if row.get('price') else '—',
+                'rating': row.get('rating', '—'),
+                'reviews': row.get('reviews', '—'),
+                'Screen Size in': clean_screen_size(row.get('Screen Size', '—')),
+                'Storage Capacity GB': clean_storage_capacity(row.get('Storage Capacity', '—')),
+                'RAM GB': clean_ram(row.get('RAM', '—')),
+                'Features': row.get('Features', '—'),
+                'Brand': row.get('Brand', '—'),
+                'Model': row.get('Model', '—'),
+                'Processor': row.get('Processor', '—'),
+                'Chipset Model': row.get('Chipset Model', '—'),
+                'Colour': row.get('Colour', '—'),
+                'Lock Status': row.get('Lock Status', '—'),
+                'Network': row.get('Network', '—'),
+                'Operating System': row.get('Operating System', '—'),
+                'Connectivity': row.get('Connectivity', '—'),
+                'Camera Resolution MP': clean_camera_resolution(row.get('Camera Resolution', '—')),
+            }
             tsv_writer.writerow(filtered_row)
 
 
@@ -64,12 +120,12 @@ data = [
 fields = [
     'title',
     'product condition',
-    'price',
+    'price RUB',
     'rating',
     'reviews',
-    'Screen Size',
-    'Storage Capacity',
-    'RAM',
+    'Screen Size in',
+    'Storage Capacity GB',
+    'RAM GB',
     'Features',
     'Brand',
     'Model',
@@ -80,7 +136,7 @@ fields = [
     'Network',
     'Operating System',
     'Connectivity',
-    'Camera Resolution'
+    'Camera Resolution MP'
 ]
 
 
