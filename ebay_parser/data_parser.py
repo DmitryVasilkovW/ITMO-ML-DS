@@ -5,8 +5,8 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
-from data_utils import format_label
-from data_utils import format_rating
+from ebay_parser.utils.data_utils import format_label
+from ebay_parser.utils.data_utils import format_rating
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -38,7 +38,7 @@ class DataParser:
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.s-item'))
             )
         except Exception as e:
-            print(f"Ошибка при получении элементов: {e}")
+            print(f"Error while retrieving items: {e}")
             return []
 
         i = 0
@@ -51,7 +51,7 @@ class DataParser:
                 item_info = {'title': title, 'price': price}
                 item_list.append(self.parse_item_params(link, item_info))
             except Exception as e:
-                print(f"Ошибка при получении информации об элементе: {e}")
+                print(f"Error while retrieving information about an item: {e}")
                 i += 1
                 if i > 3:
                     break
@@ -64,7 +64,7 @@ class DataParser:
         page_content = self.fetch_page_with_url(url, driver)
 
         if not page_content:
-            print("Ошибка: не удалось загрузить страницу.")
+            print("Error: failed to load the page.")
             return item_info
 
         soup = BeautifulSoup(page_content, 'html.parser')

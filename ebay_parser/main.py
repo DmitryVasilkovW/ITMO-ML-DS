@@ -1,6 +1,6 @@
 from ebay_parser.data_parser import DataParser
-from ebay_parser.web_utils import scroll
-from ebay_parser.save_utils import write_to_tsv_with_defaults
+from ebay_parser.utils.web_utils import scroll
+from ebay_parser.utils.save_utils import write_to_tsv_with_defaults
 
 
 def main():

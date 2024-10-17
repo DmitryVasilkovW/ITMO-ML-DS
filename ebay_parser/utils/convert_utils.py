@@ -1,7 +1,10 @@
 import csv
+import os
 
 
-def tsv_to_arff(tsv_filename, arff_filename, relation_name="smartphone_data"):
+def tsv_to_arff(tsv_filename, arff_filename='../data/ebay_smartphone_data.arff', relation_name="smartphone_data"):
+    os.makedirs(os.path.dirname(arff_filename), exist_ok=True)
+
     with open(tsv_filename, mode='r', newline='', encoding='utf-8') as tsv_file, open(arff_filename, mode='w',
                                                                                       newline='',
                                                                                       encoding='utf-8') as arff_file:
@@ -18,14 +21,39 @@ def tsv_to_arff(tsv_filename, arff_filename, relation_name="smartphone_data"):
 
         arff_file.write("\n@DATA\n")
 
-        # Запись данных
         for row in tsv_reader:
             formatted_row = []
             for value in row:
-                # Если ячейка пустая, используем '?', как принято в ARFF
                 if value == '':
                     formatted_row.append('?')
                 else:
                     formatted_row.append(value)
 
             arff_file.write(','.join(formatted_row) + '\n')
+
+
+def tsv_to_arff_with_defaults(tsv_filename):
+    tsv_to_arff(tsv_filename)
+
+
+def arff_to_csv(arff_filename, csv_filename='../data/ebay_smartphone_data.csv'):
+    os.makedirs(os.path.dirname(csv_filename), exist_ok=True)
+
+    with open(arff_filename, mode='r', encoding='utf-8') as arff_file, open(csv_filename, mode='w', newline='',
+                                                                            encoding='utf-8') as csv_file:
+        csv_writer = csv.writer(csv_file)
+
+        data_section = False
+        for line in arff_file:
+            line = line.strip()
+
+            if line.lower() == '@data':
+                data_section = True
+                continue
+
+            if data_section and not line.startswith('%'):
+                csv_writer.writerow(line.split(','))
+
+
+def arff_to_csv_with_defaults(arff_filename):
+    arff_to_csv(arff_filename)

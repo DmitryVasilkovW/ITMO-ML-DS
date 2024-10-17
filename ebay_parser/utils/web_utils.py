@@ -9,4 +9,4 @@ def scroll(driver):
         next_button.click()
         time.sleep(7)
     except Exception as e:
-        print("Не удалось найти кнопку перехода:", e)
+        print("Failed to find transition button:", e)
