@@ -8,16 +8,9 @@ def main():
     parser = DataParser(url)
     items = []
 
-    while len(items) < 2:
+    while len(items) < 1001:
         items.extend(parser.passe_page())
         scroll(parser.driver)
-
-    # #cleaned_items = [DataCleaner.clean_data(item) for item in items]
-    #
-    # print(cleaned_items)
-    #
-    # DataSaver.save_to_tsv(cleaned_items, "datasets/raw_data/data.tsv")
-    # DataSaver.save_to_arff(cleaned_items, "datasets/processed_data/data.arff")
 
     write_to_tsv_with_defaults(items)
 

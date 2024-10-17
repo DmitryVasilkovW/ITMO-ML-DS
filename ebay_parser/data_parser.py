@@ -42,12 +42,7 @@ class DataParser:
             return []
 
         item_list = []
-        i = 0
         for item in items:
-            if i > 1:
-                break
-            i += 1
-
             try:
                 title = item.find_element(By.CSS_SELECTOR, '.s-item__title').text
                 price = item.find_element(By.CSS_SELECTOR, '.s-item__price').text

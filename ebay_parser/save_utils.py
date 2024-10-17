@@ -11,26 +11,33 @@ def clean_price(price):
 
 def clean_title(title):
     if title:
-        return title.replace('НОВОЕ ОБЪЯВЛЕНИЕ ', '')
+        return title.replace('НОВОЕ ОБЪЯВЛЕНИЕ', '')
     return None
 
 
 def clean_screen_size(screen_size):
     if screen_size:
-        return re.search(r'(\d+)', screen_size).group(1)
+        match = re.search(r'(\d+)', screen_size)
+        if match:
+            return match.group(1)
     return None
 
 
 def clean_storage_capacity(storage_capacity):
     if storage_capacity:
-        return re.search(r'(\d+)', storage_capacity).group(1)
+        match = re.search(r'(\d+)', storage_capacity)
+        if match:
+            return match.group(1)
     return None
 
 
 def clean_ram(ram):
     if ram:
-        return re.search(r'(\d+)', ram).group(1)
+        match = re.search(r'(\d+)', ram)
+        if match:
+            return match.group(1)
     return None
+    l
 
 
 def clean_camera_resolution(camera_resolution):
@@ -55,25 +62,25 @@ def write_to_tsv(table_data, table_fields, filename='../data/ebay_smartphones_da
 
         for row in table_data:
             filtered_row = {
-                'title': clean_title(row.get('title', '—')),
-                'product condition': row.get('Состояние товара', '—'),
-                'price RUB': clean_price(row.get('price', '—')) if row.get('price') else '—',
-                'rating': row.get('rating', '—'),
-                'reviews': row.get('reviews', '—'),
-                'Screen Size in': clean_screen_size(row.get('Screen Size', '—')),
-                'Storage Capacity GB': clean_storage_capacity(row.get('Storage Capacity', '—')),
-                'RAM GB': clean_ram(row.get('RAM', '—')),
-                'Features': row.get('Features', '—'),
-                'Brand': row.get('Brand', '—'),
-                'Model': row.get('Model', '—'),
-                'Processor': row.get('Processor', '—'),
-                'Chipset Model': row.get('Chipset Model', '—'),
-                'Colour': row.get('Colour', '—'),
-                'Lock Status': row.get('Lock Status', '—'),
-                'Network': row.get('Network', '—'),
-                'Operating System': row.get('Operating System', '—'),
-                'Connectivity': row.get('Connectivity', '—'),
-                'Camera Resolution MP': clean_camera_resolution(row.get('Camera Resolution', '—')),
+                'title': clean_title(row.get('title', None)),
+                'product condition': row.get('Состояние товара', None),
+                'price RUB': clean_price(row.get('price', None)) if row.get('price') else None,
+                'rating': row.get('rating', None),
+                'reviews': row.get('reviews', None),
+                'Screen Size in': clean_screen_size(row.get('Screen Size', None)),
+                'Storage Capacity GB': clean_storage_capacity(row.get('Storage Capacity', None)),
+                'RAM GB': clean_ram(row.get('RAM', None)),
+                'Features': row.get('Features', None),
+                'Brand': row.get('Brand', None),
+                'Model': row.get('Model', None),
+                'Processor': row.get('Processor', None),
+                'Chipset Model': row.get('Chipset Model', None),
+                'Colour': row.get('Colour', None),
+                'Lock Status': row.get('Lock Status', None),
+                'Network': row.get('Network', None),
+                'Operating System': row.get('Operating System', None),
+                'Connectivity': row.get('Connectivity', None),
+                'Camera Resolution MP': clean_camera_resolution(row.get('Camera Resolution', None)),
             }
             tsv_writer.writerow(filtered_row)
 
