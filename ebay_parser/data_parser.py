@@ -4,8 +4,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
-from utils import format_label
-from utils import format_rating
+from data_utils import format_label
+from data_utils import format_rating
 from selenium.webdriver.common.by import By
 
 
@@ -28,42 +28,27 @@ class DataParser:
 
     def passe_page(self):
         items = self.driver.find_elements(By.CSS_SELECTOR, '.s-item')
-        data = []
-        for item in items:
-            title = item.find_element(By.CSS_SELECTOR, '.s-item__title').text
-            price = item.find_element(By.CSS_SELECTOR, '.s-item__price').text
-            link = item.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
-            data.append({'title': title, 'price': price, 'link': link})
-        return data
-
-    def parse_item(self):
-        items = self.soup.find_all('li', class_='s-item')
-
         item_list = []
         i = 0
-
         for item in items:
-            if i > 1:
+            if i > 4:
                 break
             i += 1
 
-            link_tag = item.find('a', class_='s-item__link')
-            price_tag = item.find('span', class_='s-item__price')
-            item_info = "prise: " + price_tag.text.strip().replace('\xa0', '').replace(' руб.', '').replace(' ',
-                                                                                                            '').replace(
-                ',', '.') + "\n"
-
-            item_list.append(self.parse_items(link_tag.get('href'), item_info))
+            title = item.find_element(By.CSS_SELECTOR, '.s-item__title').text
+            price = item.find_element(By.CSS_SELECTOR, '.s-item__price').text
+            link = item.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
+            item_info = {'title': title, 'price': price}
+            item_list.append(self.parse_item_params(link, item_info))
 
         return item_list
 
-    def parse_items(self, url, item_info):
-        items = []
+    def parse_item_params(self, url, item_info):
         page_content = self.fetch_page_with_url(url)
 
         if not page_content:
             print("Ошибка: не удалось загрузить страницу.")
-            return items
+            return item_info
 
         soup = BeautifulSoup(page_content, 'html.parser')
 
@@ -74,11 +59,11 @@ class DataParser:
                 rating_label = star_rating.get("aria-label")
                 rating_count, reviews_count = format_rating(rating_label)
 
-                item_info += f"rating: {rating_count}\n"
-                item_info += f"reviews: {reviews_count}\n"
+                item_info.update({'rating': rating_count})
+                item_info.update({'reviews': reviews_count})
         else:
-            item_info += "rating: without_rating" + '\n'
-            item_info += "reviews: without_reviews" + '\n'
+            item_info.update({'rating': None})
+            item_info.update({'reviews': None})
 
         features = soup.find_all('dl', {'data-testid': 'ux-labels-values'})
 
@@ -89,14 +74,11 @@ class DataParser:
             characteristics[label] = value
 
         for label, value in characteristics.items():
-            item_info += f"{format_label(label)}: {value}"
-            item_info += "\n"
-
-        items.append(item_info)
+            item_info.update({str(format_label(label)): value})
 
         self.c += 1
         print(str(self.c) + "\n")
-        return items
+        return item_info
 
     def close_driver(self):
         self.driver.quit()

@@ -14,6 +14,9 @@ def format_label(label):
 
 
 def format_rating(rating):
+    if len(rating) == 0:
+        return 0.0, 0
+
     parts = rating.split(',')
 
     rating_str = parts[0].split()[0]

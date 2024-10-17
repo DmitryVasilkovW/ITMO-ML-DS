@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import time
 
-from ebay_parser.utils import format_rating
+from ebay_parser.data_utils import format_rating
 
 # Настройки для headless Chrome
 chrome_options = Options()

@@ -37,7 +37,6 @@ while len(all_data) < 1000:
     print(len(all_data))
     all_data.extend(collect_data())
 
-    # Находим кнопку "Next" для перехода на следующую страницу
     try:
         next_button = driver.find_element(By.CSS_SELECTOR, 'a.pagination__next')
         driver.execute_script("arguments[0].scrollIntoView();", next_button)

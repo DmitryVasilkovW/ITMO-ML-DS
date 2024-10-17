@@ -1,14 +1,16 @@
 from ebay_parser.data_parser import DataParser
+from ebay_parser.web_utils import scroll
 
 
 def main():
     # url = "https://www.ebay.com/b/Cell-Phones-Smartphones/9355/bn_320094"
     url = "https://www.ebay.com/b/Cell-Phones-Smartphones/9355/bn_320094?rt=nc&_sop=10"
     parser = DataParser(url)
+    items = []
 
-    html = parser.fetch_page()
-
-    items = parser.parse_page()
+    while len(items) < 1000:
+        items.extend(parser.passe_page())
+        scroll(parser.driver)
 
     # #cleaned_items = [DataCleaner.clean_data(item) for item in items]
     #
