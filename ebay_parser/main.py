@@ -3,12 +3,11 @@ from ebay_parser.web_utils import scroll
 
 
 def main():
-    # url = "https://www.ebay.com/b/Cell-Phones-Smartphones/9355/bn_320094"
     url = "https://www.ebay.com/b/Cell-Phones-Smartphones/9355/bn_320094?rt=nc&_sop=10"
     parser = DataParser(url)
     items = []
 
-    while len(items) < 1000:
+    while len(items) < 2:
         items.extend(parser.passe_page())
         scroll(parser.driver)
 
@@ -20,7 +19,7 @@ def main():
     # DataSaver.save_to_arff(cleaned_items, "datasets/processed_data/data.arff")
 
     for item in items:
-        print(*item)
+        print(item)
 
 
 if __name__ == "__main__":

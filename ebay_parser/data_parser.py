@@ -4,9 +4,12 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
+
 from data_utils import format_label
 from data_utils import format_rating
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class DataParser:
@@ -18,33 +21,48 @@ class DataParser:
 
     def fetch_page(self):
         self.driver.get(self.url)
-        time.sleep(5)
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '.s-item'))
+        )
         return self.driver.page_source
 
-    def fetch_page_with_url(self, url):
-        self.driver.get(url)
+    @staticmethod
+    def fetch_page_with_url(url, driver):
+        driver.get(url)
         time.sleep(5)
-        return self.driver.page_source
+        return driver.page_source
 
     def passe_page(self):
-        items = self.driver.find_elements(By.CSS_SELECTOR, '.s-item')
+        try:
+            items = WebDriverWait(self.driver, 20).until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.s-item'))
+            )
+        except Exception as e:
+            print(f"Ошибка при получении элементов: {e}")
+            return []
+
         item_list = []
         i = 0
         for item in items:
-            if i > 4:
+            if i > 1:
                 break
             i += 1
 
-            title = item.find_element(By.CSS_SELECTOR, '.s-item__title').text
-            price = item.find_element(By.CSS_SELECTOR, '.s-item__price').text
-            link = item.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
-            item_info = {'title': title, 'price': price}
-            item_list.append(self.parse_item_params(link, item_info))
+            try:
+                title = item.find_element(By.CSS_SELECTOR, '.s-item__title').text
+                price = item.find_element(By.CSS_SELECTOR, '.s-item__price').text
+                link = item.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
+                item_info = {'title': title, 'price': price}
+                item_list.append(self.parse_item_params(link, item_info))
+            except Exception as e:
+                print(f"Ошибка при получении информации об элементе: {e}")
+                continue
 
         return item_list
 
     def parse_item_params(self, url, item_info):
-        page_content = self.fetch_page_with_url(url)
+        driver = self.__setup_driver()
+        page_content = self.fetch_page_with_url(url, driver)
 
         if not page_content:
             print("Ошибка: не удалось загрузить страницу.")
