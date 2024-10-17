@@ -1,5 +1,6 @@
 from ebay_parser.data_parser import DataParser
 from ebay_parser.web_utils import scroll
+from ebay_parser.save_utils import write_to_tsv_with_defaults
 
 
 def main():
@@ -18,8 +19,7 @@ def main():
     # DataSaver.save_to_tsv(cleaned_items, "datasets/raw_data/data.tsv")
     # DataSaver.save_to_arff(cleaned_items, "datasets/processed_data/data.arff")
 
-    for item in items:
-        print(item)
+    write_to_tsv_with_defaults(items)
 
 
 if __name__ == "__main__":

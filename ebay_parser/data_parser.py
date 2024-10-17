@@ -34,7 +34,7 @@ class DataParser:
 
     def passe_page(self):
         try:
-            items = WebDriverWait(self.driver, 20).until(
+            items = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.s-item'))
             )
         except Exception as e:
