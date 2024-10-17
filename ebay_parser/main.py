@@ -8,7 +8,7 @@ def main():
     parser = DataParser(url)
     items = []
 
-    while len(items) < 1001:
+    while len(items) < 400:
         items.extend(parser.passe_page())
         scroll(parser.driver)
 

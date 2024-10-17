@@ -5,7 +5,9 @@ import re
 
 def clean_price(price):
     if price:
-        return float(price.replace(' руб.', '').replace(' ', '').replace(',', '.'))
+        match = re.search(r'(\d+[\.,]?\d*)', price.replace(' ', ''))
+        if match:
+            return float(match.group(1).replace(',', '.'))
     return None
 
 
@@ -49,6 +51,7 @@ def clean_camera_resolution(camera_resolution):
 def write_to_tsv(table_data, table_fields, filename='../data/ebay_smartphones_data.tsv'):
     """
     Создает файл в формате TSV из выбранных полей словаря.
+    Если файл существует, данные будут добавлены в конец файла.
 
     :param table_data: список словарей с данными
     :param table_fields: список полей, которые нужно записать в TSV
@@ -56,9 +59,11 @@ def write_to_tsv(table_data, table_fields, filename='../data/ebay_smartphones_da
     """
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
-    with open(filename, mode='w', newline='', encoding='utf-8') as file:
+    with open(filename, mode='a', newline='', encoding='utf-8') as file:
         tsv_writer = csv.DictWriter(file, fieldnames=table_fields, delimiter='\t')
-        tsv_writer.writeheader()
+
+        if file.tell() == 0:
+            tsv_writer.writeheader()
 
         for row in table_data:
             filtered_row = {
@@ -83,6 +88,7 @@ def write_to_tsv(table_data, table_fields, filename='../data/ebay_smartphones_da
                 'Camera Resolution MP': clean_camera_resolution(row.get('Camera Resolution', None)),
             }
             tsv_writer.writerow(filtered_row)
+
 
 
 data = [

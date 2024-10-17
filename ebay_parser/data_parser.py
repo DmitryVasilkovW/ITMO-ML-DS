@@ -41,6 +41,7 @@ class DataParser:
             print(f"Ошибка при получении элементов: {e}")
             return []
 
+        i = 0
         item_list = []
         for item in items:
             try:
@@ -51,6 +52,9 @@ class DataParser:
                 item_list.append(self.parse_item_params(link, item_info))
             except Exception as e:
                 print(f"Ошибка при получении информации об элементе: {e}")
+                i += 1
+                if i > 3:
+                    break
                 continue
 
         return item_list
