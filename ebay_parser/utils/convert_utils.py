@@ -25,6 +25,24 @@ def tsv_to_arff(tsv_filename, arff_filename='../../data/ebay_smartphones_data.ar
             "новое": ["новое", "Новый"]
         }
 
+        colour_values = {
+            "Black": ["Black", "Черный", "Phantom Black", "Obsidian"],
+            "Blue": ["Blue", "Phantom Blue"],
+            "Silver": ["Silver", "Aurora Silver"],
+            "White": ["White", "Ceramic White"],
+            "Grey": ["Grey"],
+            "Multicoloured": ["Multicoloured"],
+            "Gold": ["Gold"],
+            "AT&T": ["AT&T"],
+            "Orange": ["Orange"],
+            "Red": ["Red"],
+            "Yellow": ["Yellow"],
+            "Green": ["Green"],
+            "Brown": ["Brown"],
+            "Purple": ["Deep Purple", "Purple"],
+            "Pink": ["Pink"]
+        }
+
         for column in header:
             column_name = column.replace(' ', '_')
 
@@ -33,7 +51,8 @@ def tsv_to_arff(tsv_filename, arff_filename='../../data/ebay_smartphones_data.ar
                 arff_file.write(f"@ATTRIBUTE {column_name} {{{formatted_values}}}\n")
 
             elif column_name.lower() == 'colour':
-                arff_file.write(f"@ATTRIBUTE {column_name} STRING\n")
+                formatted_values = ','.join(f"'{key}'" for key in colour_values.keys())
+                arff_file.write(f"@ATTRIBUTE {column_name} {{{formatted_values}}}\n")
 
             elif "price" in column or "rating" in column or "reviews" in column or "Size" in column or "Capacity" in column or "RAM" in column or "Camera Resolution MP" in column:
                 arff_file.write(f"@ATTRIBUTE {column_name} NUMERIC\n")
@@ -56,6 +75,15 @@ def tsv_to_arff(tsv_filename, arff_filename='../../data/ebay_smartphones_data.ar
                             matched_condition = condition
                             break
                     formatted_row.append(matched_condition)
+
+                elif column_name.lower() == 'colour':
+                    matched_colour = '?'
+                    for colour, substrings in colour_values.items():
+                        if any(substring.lower() in value.lower() for substring in substrings):
+                            matched_colour = colour
+                            break
+                    formatted_row.append(matched_colour)
+
                 else:
                     if value == '':
                         formatted_row.append('?')
