@@ -2,7 +2,7 @@ import csv
 import os
 
 
-def tsv_to_arff(tsv_filename, arff_filename='../data/ebay_smartphone_data.arff', relation_name="smartphone_data"):
+def tsv_to_arff(tsv_filename, arff_filename='../../data/ebay_smartphones_data.arff', relation_name="smartphone_data"):
     os.makedirs(os.path.dirname(arff_filename), exist_ok=True)
 
     with open(tsv_filename, mode='r', newline='', encoding='utf-8') as tsv_file, open(arff_filename, mode='w',
@@ -14,7 +14,7 @@ def tsv_to_arff(tsv_filename, arff_filename='../data/ebay_smartphone_data.arff',
         arff_file.write(f"@RELATION {relation_name}\n\n")
 
         for column in header:
-            if "price" in column or "rating" in column or "reviews" in column or "Size" in column or "Capacity" in column or "RAM" in column:
+            if "price" in column or "rating" in column or "reviews" in column or "Size" in column or "Capacity" in column or "RAM" in column or "Camera Resolution MP" in column:
                 arff_file.write(f"@ATTRIBUTE {column.replace(' ', '_')} NUMERIC\n")
             else:
                 arff_file.write(f"@ATTRIBUTE {column.replace(' ', '_')} STRING\n")
@@ -36,7 +36,7 @@ def tsv_to_arff_with_defaults(tsv_filename):
     tsv_to_arff(tsv_filename)
 
 
-def arff_to_csv(arff_filename, csv_filename='../data/ebay_smartphone_data.csv'):
+def arff_to_csv(arff_filename, csv_filename='../data/ebay_smartphones_data.csv'):
     os.makedirs(os.path.dirname(csv_filename), exist_ok=True)
 
     with open(arff_filename, mode='r', encoding='utf-8') as arff_file, open(csv_filename, mode='w', newline='',
@@ -57,3 +57,6 @@ def arff_to_csv(arff_filename, csv_filename='../data/ebay_smartphone_data.csv'):
 
 def arff_to_csv_with_defaults(arff_filename):
     arff_to_csv(arff_filename)
+
+
+tsv_to_arff_with_defaults("../../data/ebay_smartphones_data.tsv")
