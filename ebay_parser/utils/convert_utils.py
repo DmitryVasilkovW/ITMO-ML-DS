@@ -1,6 +1,36 @@
 import csv
 import os
 
+product_condition_values = {
+    "восстановленное в хорошем состоянии": ["Отличное состояние - восстановлен",
+                                            "Очень хорошее состояние - восстановлен",
+                                            "Хорошее состояние - восстановлен"],
+    "восстановленное в среднем состоянии": ["Среднее состояние - восстановлен"],
+    "восстановленное в удовлетворительном состоянии": ["Удовлетворителное состояние - восстановлен"],
+    "на запчасти": ["разборка", "на запчасти", "нерабочее",
+                    "Для разборки на запчасти или в нерабочем состоянии"],
+    "бу": ["БУ", "б/у", "Б/у", "В открытой коробке"],
+    "новое": ["новое", "Новый"]
+}
+
+colour_values = {
+    "Black": ["Black", "Черный", "Phantom Black", "Obsidian"],
+    "Blue": ["Blue", "Phantom Blue"],
+    "Silver": ["Silver", "Aurora Silver"],
+    "White": ["White", "Ceramic White"],
+    "Grey": ["Grey"],
+    "Multicoloured": ["Multicoloured"],
+    "Gold": ["Gold"],
+    "AT&T": ["AT&T"],
+    "Orange": ["Orange"],
+    "Red": ["Red"],
+    "Yellow": ["Yellow"],
+    "Green": ["Green"],
+    "Brown": ["Brown"],
+    "Purple": ["Deep Purple", "Purple"],
+    "Pink": ["Pink"]
+}
+
 
 def tsv_to_arff(tsv_filename, arff_filename='../../data/ebay_smartphones_data.arff', relation_name="smartphone_data"):
     os.makedirs(os.path.dirname(arff_filename), exist_ok=True)
@@ -12,36 +42,6 @@ def tsv_to_arff(tsv_filename, arff_filename='../../data/ebay_smartphones_data.ar
         header = next(tsv_reader)
 
         arff_file.write(f"@RELATION {relation_name}\n\n")
-
-        product_condition_values = {
-            "восстановленное в хорошем состоянии": ["Отличное состояние - восстановлен",
-                                                    "Очень хорошее состояние - восстановлен",
-                                                    "Хорошее состояние - восстановлен"],
-            "восстановленное в среднем состоянии": ["Среднее состояние - восстановлен"],
-            "восстановленное в удовлетворительном состоянии": ["Удовлетворителное состояние - восстановлен"],
-            "на запчасти": ["разборка", "на запчасти", "нерабочее",
-                            "Для разборки на запчасти или в нерабочем состоянии"],
-            "бу": ["БУ", "б/у", "Б/у", "В открытой коробке"],
-            "новое": ["новое", "Новый"]
-        }
-
-        colour_values = {
-            "Black": ["Black", "Черный", "Phantom Black", "Obsidian"],
-            "Blue": ["Blue", "Phantom Blue"],
-            "Silver": ["Silver", "Aurora Silver"],
-            "White": ["White", "Ceramic White"],
-            "Grey": ["Grey"],
-            "Multicoloured": ["Multicoloured"],
-            "Gold": ["Gold"],
-            "AT&T": ["AT&T"],
-            "Orange": ["Orange"],
-            "Red": ["Red"],
-            "Yellow": ["Yellow"],
-            "Green": ["Green"],
-            "Brown": ["Brown"],
-            "Purple": ["Deep Purple", "Purple"],
-            "Pink": ["Pink"]
-        }
 
         for column in header:
             column_name = column.replace(' ', '_')
