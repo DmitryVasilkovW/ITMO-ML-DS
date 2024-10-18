@@ -17,7 +17,7 @@ def clean_title(title):
 
 def clean_screen_size(screen_size):
     if screen_size:
-        match = re.search(r'(\d+)', screen_size)
+        match = re.search(r'(\d+\.?\d*)', screen_size)
         if match:
             return match.group(1)
     return None

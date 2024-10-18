@@ -17,7 +17,7 @@ class DataParser:
         self.url = url
         self.driver = self.__setup_driver()
         self.soup = BeautifulSoup(self.fetch_page(), 'html.parser')
-        self.c = 0
+        self.counter = 0
 
     def fetch_page(self):
         self.driver.get(self.url)
@@ -93,8 +93,8 @@ class DataParser:
         for label, value in characteristics.items():
             item_info.update({str(format_label(label)): value})
 
-        self.c += 1
-        print(str(self.c) + "\n")
+        self.counter += 1
+        print(str(self.counter) + "\n")
         return item_info
 
     def close_driver(self):
@@ -103,6 +103,7 @@ class DataParser:
     @staticmethod
     def __setup_driver():
         chrome_options = Options()
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
 
