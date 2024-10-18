@@ -13,50 +13,60 @@ def tsv_to_arff(tsv_filename, arff_filename='../../data/ebay_smartphones_data.ar
 
         arff_file.write(f"@RELATION {relation_name}\n\n")
 
+        product_condition_values = {
+            "восстановленное в хорошем состоянии": ["Отличное состояние - восстановлен",
+                                                    "Очень хорошее состояние - восстановлен",
+                                                    "Хорошее состояние - восстановлен"],
+            "восстановленное в среднем состоянии": ["Среднее состояние - восстановлен"],
+            "восстановленное в удовлетворительном состоянии": ["Удовлетворителное состояние - восстановлен"],
+            "на запчасти": ["разборка", "на запчасти", "нерабочее",
+                            "Для разборки на запчасти или в нерабочем состоянии"],
+            "бу": ["БУ", "б/у", "Б/у", "В открытой коробке"],
+            "новое": ["новое", "Новый"]
+        }
+
         for column in header:
-            if "price" in column or "rating" in column or "reviews" in column or "Size" in column or "Capacity" in column or "RAM" in column or "Camera Resolution MP" in column:
-                arff_file.write(f"@ATTRIBUTE {column.replace(' ', '_')} NUMERIC\n")
+            column_name = column.replace(' ', '_')
+
+            if column_name.lower() == 'product_condition':
+                formatted_values = ','.join(f"'{key}'" for key in product_condition_values.keys())
+                arff_file.write(f"@ATTRIBUTE {column_name} {{{formatted_values}}}\n")
+
+            elif column_name.lower() == 'colour':
+                arff_file.write(f"@ATTRIBUTE {column_name} STRING\n")
+
+            elif "price" in column or "rating" in column or "reviews" in column or "Size" in column or "Capacity" in column or "RAM" in column or "Camera Resolution MP" in column:
+                arff_file.write(f"@ATTRIBUTE {column_name} NUMERIC\n")
+
             else:
-                arff_file.write(f"@ATTRIBUTE {column.replace(' ', '_')} STRING\n")
+                arff_file.write(f"@ATTRIBUTE {column_name} STRING\n")
 
         arff_file.write("\n@DATA\n")
 
         for row in tsv_reader:
             formatted_row = []
-            for value in row:
-                if value == '':
-                    formatted_row.append('?')
+            for idx, value in enumerate(row):
+                column = header[idx]
+                column_name = column.replace(' ', '_')
+
+                if column_name.lower() == 'product_condition':
+                    matched_condition = '?'
+                    for condition, substrings in product_condition_values.items():
+                        if any(substring.lower() in value.lower() for substring in substrings):
+                            matched_condition = condition
+                            break
+                    formatted_row.append(matched_condition)
                 else:
-                    formatted_row.append(value)
+                    if value == '':
+                        formatted_row.append('?')
+                    else:
+                        formatted_row.append(value)
 
             arff_file.write(','.join(formatted_row) + '\n')
 
 
 def tsv_to_arff_with_defaults(tsv_filename):
     tsv_to_arff(tsv_filename)
-
-
-def arff_to_csv(arff_filename, csv_filename='../data/ebay_smartphones_data.csv'):
-    os.makedirs(os.path.dirname(csv_filename), exist_ok=True)
-
-    with open(arff_filename, mode='r', encoding='utf-8') as arff_file, open(csv_filename, mode='w', newline='',
-                                                                            encoding='utf-8') as csv_file:
-        csv_writer = csv.writer(csv_file)
-
-        data_section = False
-        for line in arff_file:
-            line = line.strip()
-
-            if line.lower() == '@data':
-                data_section = True
-                continue
-
-            if data_section and not line.startswith('%'):
-                csv_writer.writerow(line.split(','))
-
-
-def arff_to_csv_with_defaults(arff_filename):
-    arff_to_csv(arff_filename)
 
 
 tsv_to_arff_with_defaults("../../data/ebay_smartphones_data.tsv")
