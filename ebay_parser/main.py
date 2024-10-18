@@ -4,15 +4,15 @@ from ebay_parser.utils.save_utils import write_to_tsv_with_defaults
 
 
 def main():
-    url = "https://www.ebay.com/b/Cell-Phones-Smartphones/9355/bn_320094?rt=nc&_sop=10"
+    url = "https://www.ebay.com/b/Cell-Phones-Smartphones/9355/bn_320094?LH_BIN=1&rt=nc&_sop=10"
     parser = DataParser(url)
     items = []
 
     while len(items) < 400:
+        items = []
         items.extend(parser.passe_page())
+        write_to_tsv_with_defaults(items)
         scroll(parser.driver)
-
-    write_to_tsv_with_defaults(items)
 
 
 if __name__ == "__main__":
